@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Umbot_Factory.png-7c3ad60637a022901a53bcbd17489672.stex"
+path="res://.import/Umbot Factory.png-af44fc7f0ef45ea3687c30ec916a68e6.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Umbot_Factory.png"
-dest_files=[ "res://.import/Umbot_Factory.png-7c3ad60637a022901a53bcbd17489672.stex" ]
+source_file="res://Assets/Umbot Factory.png"
+dest_files=[ "res://.import/Umbot Factory.png-af44fc7f0ef45ea3687c30ec916a68e6.stex" ]
 
 [params]
 
