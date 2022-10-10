@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://Cards/CardBase.gd" type="Script" id=1]
-[ext_resource path="res://Assets/Card_1_Template.png" type="Texture" id=2]
+[ext_resource path="res://Asset/CommonCard.png" type="Texture" id=2]
 
 [node name="CardBase" type="MarginContainer"]
 margin_right = 250.0
@@ -9,7 +9,7 @@ margin_bottom = 350.0
 script = ExtResource( 1 )
 
 [node name="Background" type="Sprite" parent="."]
-scale = Vector2( 0.5, 0.501 )
+scale = Vector2( 0.391, 0.393 )
 texture = ExtResource( 2 )
 centered = false
 
@@ -19,88 +19,108 @@ margin_bottom = 350.0
 rect_min_size = Vector2( 250, 350 )
 
 [node name="LeftMargin" type="MarginContainer" parent="HBoxContainer"]
-margin_right = 20.0
+margin_right = 25.0
 margin_bottom = 350.0
-rect_min_size = Vector2( 20, 0 )
+rect_min_size = Vector2( 25, 0 )
 
 [node name="Elements" type="VBoxContainer" parent="HBoxContainer"]
-margin_left = 24.0
+margin_left = 29.0
 margin_right = 224.0
 margin_bottom = 350.0
-rect_min_size = Vector2( 200, 0 )
+rect_min_size = Vector2( 195, 0 )
 
 [node name="TopGap" type="MarginContainer" parent="HBoxContainer/Elements"]
-margin_right = 200.0
-margin_bottom = 19.0
-rect_min_size = Vector2( 0, 19 )
+margin_right = 195.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
 
 [node name="TopBar" type="HBoxContainer" parent="HBoxContainer/Elements"]
-margin_top = 23.0
-margin_right = 200.0
-margin_bottom = 37.0
-rect_min_size = Vector2( 200, 0 )
+margin_top = 24.0
+margin_right = 195.0
+margin_bottom = 49.0
+rect_min_size = Vector2( 195, 25 )
 
-[node name="Title" type="Label" parent="HBoxContainer/Elements/TopBar"]
-margin_right = 94.0
-margin_bottom = 14.0
+[node name="Title" type="MarginContainer" parent="HBoxContainer/Elements/TopBar"]
+margin_right = 195.0
+margin_bottom = 25.0
+rect_min_size = Vector2( 195, 25 )
+
+[node name="Title" type="Label" parent="HBoxContainer/Elements/TopBar/Title"]
+margin_right = 195.0
+margin_bottom = 25.0
+rect_min_size = Vector2( 0, 25 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "Umbot Factory"
-
-[node name="CenterGap" type="MarginContainer" parent="HBoxContainer/Elements/TopBar"]
-margin_left = 98.0
-margin_right = 98.0
-margin_bottom = 14.0
+valign = 1
 
 [node name="CardImgContainer" type="MarginContainer" parent="HBoxContainer/Elements"]
-margin_top = 41.0
-margin_right = 200.0
-margin_bottom = 191.0
-rect_min_size = Vector2( 0, 150 )
+margin_top = 53.0
+margin_right = 195.0
+margin_bottom = 188.0
+rect_min_size = Vector2( 195, 135 )
 
 [node name="Card" type="Sprite" parent="HBoxContainer/Elements/CardImgContainer"]
 centered = false
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Elements"]
-margin_top = 195.0
-margin_right = 200.0
-margin_bottom = 220.0
-rect_min_size = Vector2( 0, 25 )
+margin_top = 192.0
+margin_right = 195.0
+margin_bottom = 212.0
+rect_min_size = Vector2( 195, 20 )
+
+[node name="Label" type="Label" parent="HBoxContainer/Elements/MarginContainer"]
+margin_top = 3.0
+margin_right = 195.0
+margin_bottom = 17.0
 
 [node name="Effect" type="MarginContainer" parent="HBoxContainer/Elements"]
-margin_top = 224.0
-margin_right = 200.0
-margin_bottom = 309.0
+margin_top = 216.0
+margin_right = 195.0
+margin_bottom = 301.0
 rect_min_size = Vector2( 0, 85 )
 
 [node name="Label" type="Label" parent="HBoxContainer/Elements/Effect"]
-margin_right = 200.0
+margin_right = 195.0
 margin_bottom = 85.0
 rect_min_size = Vector2( 0, 85 )
 size_flags_vertical = 5
 custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "ljkfnadsblkfjabkjhb xz,mcnb asdlkjbasdlkfhbasdkfjabhsdkjfahbsdfkjsahbfkjabhsfkjsadhbdkjfhbsadkjhbsafk"
 autowrap = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Elements"]
-margin_top = 313.0
-margin_right = 200.0
-margin_bottom = 328.0
-rect_min_size = Vector2( 0, 15 )
+margin_top = 305.0
+margin_right = 195.0
+margin_bottom = 335.0
+rect_min_size = Vector2( 195, 30 )
 
-[node name="LeftGap" type="MarginContainer" parent="HBoxContainer/Elements/HBoxContainer"]
-margin_right = 160.0
-margin_bottom = 15.0
-rect_min_size = Vector2( 160, 0 )
+[node name="Left Gap" type="MarginContainer" parent="HBoxContainer/Elements/HBoxContainer"]
+margin_right = 15.0
+margin_bottom = 30.0
+rect_min_size = Vector2( 15, 0 )
 
-[node name="Counter" type="MarginContainer" parent="HBoxContainer/Elements/HBoxContainer"]
-margin_left = 164.0
-margin_right = 199.0
-margin_bottom = 15.0
-rect_min_size = Vector2( 35, 0 )
+[node name="Health" type="MarginContainer" parent="HBoxContainer/Elements/HBoxContainer"]
+margin_left = 19.0
+margin_right = 34.0
+margin_bottom = 30.0
+rect_min_size = Vector2( 15, 0 )
 
-[node name="Label" type="Label" parent="HBoxContainer/Elements/HBoxContainer/Counter"]
-margin_right = 35.0
-margin_bottom = 14.0
-custom_colors/font_color = Color( 0, 0, 0, 1 )
-text = "1/1"
-align = 1
+[node name="Label" type="Label" parent="HBoxContainer/Elements/HBoxContainer/Health"]
+margin_top = 8.0
+margin_right = 15.0
+margin_bottom = 22.0
+
+[node name="Mid Gap" type="MarginContainer" parent="HBoxContainer/Elements/HBoxContainer"]
+margin_left = 38.0
+margin_right = 153.0
+margin_bottom = 30.0
+rect_min_size = Vector2( 115, 0 )
+
+[node name="Attack" type="MarginContainer" parent="HBoxContainer/Elements/HBoxContainer"]
+margin_left = 157.0
+margin_right = 172.0
+margin_bottom = 30.0
+rect_min_size = Vector2( 15, 0 )
+
+[node name="Label" type="Label" parent="HBoxContainer/Elements/HBoxContainer/Attack"]
+margin_top = 8.0
+margin_right = 15.0
+margin_bottom = 22.0
