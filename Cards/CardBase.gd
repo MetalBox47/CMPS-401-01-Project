@@ -33,19 +33,17 @@ func _ready():
 	
 	# Loading the background texture
 	$Background.texture = load(CardBackgroundImg)
+	
+	var cost = CardInfo["cost"]
+	$HBoxContainer/Elements/TopBar/Title/Title.text = CardInfo["name"]
+	$HBoxContainer/Elements/Effect/Label.text = CardInfo["effect"]
 	match CardType:
-		"Spells":
-			$HBoxContainer/Elements/TopBar/Title/Title.text = CardInfo["name"]
-			$HBoxContainer/Elements/Effect/Label.text = CardInfo["effect"]
+		# This is a switch statement, if you want to add "Spells" key, you can.
 		"Creatures":
 			var Attack = CardInfo["top_counter"]
 			var Health = CardInfo["bot_counter"]
-			$HBoxContainer/Elements/TopBar/Title/Title.text = CardInfo["name"]
-			$HBoxContainer/Elements/Effect/Label.text = CardInfo["effect"]
 			$HBoxContainer/Elements/HBoxContainer/Health/Label.text = str(Health)
 			$HBoxContainer/Elements/HBoxContainer/Attack/Label.text = str(Attack)
-			
-	
 		
 	
 	
