@@ -18,4 +18,4 @@ func _gui_input(event):
 			$"../../".drawCard()
 			DeckSize = $"../../".DeckSize
 			if DeckSize == 0:
-				disabled = true
+				disabled = true # Disables the buttton to be used any more
