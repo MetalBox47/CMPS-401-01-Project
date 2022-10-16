@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://Playspace.gd" type="Script" id=1]
+[ext_resource path="res://PlaySpace/Playspace.gd" type="Script" id=1]
 [ext_resource path="res://Asset/DrawButton.png" type="Texture" id=2]
 [ext_resource path="res://PlaySpace/DrawButton.gd" type="Script" id=3]
 [ext_resource path="res://Asset/DuelBackgroundImg.png.png" type="Texture" id=4]
@@ -35,13 +35,13 @@ margin_right = 881.0
 margin_bottom = 496.0
 
 [node name="Player2Side" type="HBoxContainer" parent="VBoxContainer"]
-margin_right = 881.0
+margin_right = 883.0
 margin_bottom = 238.0
 rect_min_size = Vector2( 881, 238 )
 
 [node name="Player1Side" type="HBoxContainer" parent="VBoxContainer"]
 margin_top = 242.0
-margin_right = 881.0
+margin_right = 883.0
 margin_bottom = 497.0
 rect_min_size = Vector2( 881, 254 )
 
@@ -62,10 +62,32 @@ margin_right = 730.0
 margin_bottom = 255.0
 rect_min_size = Vector2( 676, 254 )
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Player1Side/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/Player1Side/VBoxContainer"]
 margin_right = 676.0
 margin_bottom = 160.0
-rect_min_size = Vector2( 676, 160 )
+rect_min_size = Vector2( 676, 0 )
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Player1Side/VBoxContainer/VBoxContainer"]
+margin_right = 676.0
+margin_bottom = 15.0
+rect_min_size = Vector2( 676, 15 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Player1Side/VBoxContainer/VBoxContainer"]
+margin_top = 19.0
+margin_right = 676.0
+margin_bottom = 160.0
+rect_min_size = Vector2( 676, 141 )
+
+[node name="Left Gap" type="MarginContainer" parent="VBoxContainer/Player1Side/VBoxContainer/VBoxContainer/HBoxContainer"]
+margin_right = 126.0
+margin_bottom = 141.0
+rect_min_size = Vector2( 126, 141 )
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Player1Side/VBoxContainer/VBoxContainer/HBoxContainer"]
+margin_left = 130.0
+margin_right = 675.0
+margin_bottom = 141.0
+rect_min_size = Vector2( 545, 141 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/Player1Side/VBoxContainer"]
 margin_top = 164.0
@@ -107,7 +129,7 @@ margin_right = 455.0
 margin_bottom = 12.0
 rect_min_size = Vector2( 455, 12 )
 
-[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/Player1Side/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="PlayerDeck" type="MarginContainer" parent="VBoxContainer/Player1Side/VBoxContainer/HBoxContainer/VBoxContainer"]
 margin_top = 16.0
 margin_right = 455.0
 margin_bottom = 91.0
@@ -119,8 +141,24 @@ margin_right = 764.0
 margin_bottom = 255.0
 rect_min_size = Vector2( 30, 254 )
 
+[node name="VBoxContainer2" type="VBoxContainer" parent="VBoxContainer/Player1Side"]
+margin_left = 768.0
+margin_right = 883.0
+margin_bottom = 255.0
+rect_min_size = Vector2( 115, 0 )
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Player1Side/VBoxContainer2"]
+margin_right = 115.0
+margin_bottom = 148.0
+rect_min_size = Vector2( 115, 148 )
+
+[node name="MarginContainer2" type="MarginContainer" parent="VBoxContainer/Player1Side/VBoxContainer2"]
+margin_top = 152.0
+margin_right = 115.0
+margin_bottom = 255.0
+rect_min_size = Vector2( 115, 103 )
+
 [node name="DrawDeck" type="Node2D" parent="."]
-visible = false
 script = SubResource( 1 )
 
 [node name="DrawButton" type="TextureButton" parent="DrawDeck"]

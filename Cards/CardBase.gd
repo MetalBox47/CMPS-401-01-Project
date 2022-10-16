@@ -19,10 +19,10 @@ onready var CardBackgroundImg = str("res://Asset/",CardInfo.rarity,".png")
 
 var CardTexture
 var CardImgContainer
-
+var CardSize = rect_size
 func _ready():
 	
-	var CardSize = rect_size  # rect_size is the size of the "CardBase" container
+	  # rect_size is the size of the "CardBase" container
 	# We may not use CardSize, this is just to show how to extract it.
 	
 	# loading the small CardImg and setting its scale to the card borders
@@ -30,7 +30,7 @@ func _ready():
 	CardTexture = get_node("HBoxContainer/Elements/CardImgContainer/Card")
 	$HBoxContainer/Elements/CardImgContainer/Card.texture = load(CardImg)
 	$HBoxContainer/Elements/CardImgContainer/Card.scale *= CardImgContainer.get_size()/CardTexture.texture.get_size()
-	
+#	$Focus.rect_scale *= CardSize/$Focus.rect_size
 	# Loading the background texture
 	$Background.texture = load(CardBackgroundImg)
 	
@@ -47,8 +47,9 @@ func _ready():
 		
 	
 	
-	
 	print($Background.scale)
 	print(CardTexture.texture.get_size())
+
+
 
 
