@@ -85,6 +85,7 @@ rect_min_size = Vector2( 0, 85 )
 size_flags_vertical = 5
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 autowrap = true
+clip_text = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/Elements"]
 margin_top = 305.0
@@ -107,6 +108,7 @@ rect_min_size = Vector2( 15, 0 )
 margin_top = 8.0
 margin_right = 15.0
 margin_bottom = 22.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
 
 [node name="Mid Gap" type="MarginContainer" parent="HBoxContainer/Elements/HBoxContainer"]
 margin_left = 38.0
@@ -124,3 +126,11 @@ rect_min_size = Vector2( 15, 0 )
 margin_top = 8.0
 margin_right = 15.0
 margin_bottom = 22.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+
+[node name="Focus" type="TextureButton" parent="."]
+margin_right = 250.0
+margin_bottom = 350.0
+
+[connection signal="mouse_entered" from="Focus" to="." method="_on_Focus_mouse_entered"]
+[connection signal="mouse_exited" from="Focus" to="." method="_on_Focus_mouse_exited"]
