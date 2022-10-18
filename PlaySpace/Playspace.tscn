@@ -3,7 +3,7 @@
 [ext_resource path="res://PlaySpace/Playspace.gd" type="Script" id=1]
 [ext_resource path="res://Asset/DrawButton.png" type="Texture" id=2]
 [ext_resource path="res://PlaySpace/DrawButton.gd" type="Script" id=3]
-[ext_resource path="res://Asset/DuelBackgroundImg.png.png" type="Texture" id=4]
+[ext_resource path="res://Asset/background_color.png" type="Texture" id=4]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node2D
@@ -31,8 +31,8 @@ texture = ExtResource( 4 )
 centered = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-margin_right = 881.0
-margin_bottom = 496.0
+margin_right = 883.0
+margin_bottom = 497.0
 
 [node name="Player2Side" type="HBoxContainer" parent="VBoxContainer"]
 margin_right = 883.0
@@ -162,8 +162,10 @@ rect_min_size = Vector2( 115, 103 )
 script = SubResource( 1 )
 
 [node name="DrawButton" type="TextureButton" parent="DrawDeck"]
-margin_right = 40.0
-margin_bottom = 40.0
+margin_left = 1618.0
+margin_top = 881.0
+margin_right = 1918.0
+margin_bottom = 1081.0
 texture_normal = ExtResource( 2 )
 texture_pressed = ExtResource( 2 )
 texture_hover = ExtResource( 2 )
