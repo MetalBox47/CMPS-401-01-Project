@@ -50,6 +50,7 @@ func _ready():
 	
 # List of scales to be used for the card onhover resizing
 var state = "OutHand"
+var inPlay = false
 onready var new_scale = rect_scale * 1.1
 onready var original_scale = rect_scale
 
@@ -60,12 +61,12 @@ func _physics_process(delta):
 		"OutHand":
 			rect_scale = original_scale
 
-
 # functions that emit signals to resize the card when mousehovered
-func _on_Focus_mouse_entered():
-	state = "InHand"
-	print("Entered")
+func _on_Focus_mouse_entered(): 
+	if !inPlay:
+		state = "InHand"
 func _on_Focus_mouse_exited():
 	state = "OutHand"
-	print("Exited")
 
+func setPlay(b):
+	inPlay = b
