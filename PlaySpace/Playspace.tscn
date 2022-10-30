@@ -170,3 +170,5 @@ texture_hover = ExtResource( 2 )
 script = ExtResource( 3 )
 
 [node name="Cards" type="Node2D" parent="."]
+
+[node name="PlayerField" type="Node2D parent="."]
