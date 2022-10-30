@@ -65,6 +65,8 @@ func _physics_process(delta):
 func _on_Focus_mouse_entered(): 
 	if !inPlay:
 		state = "InHand"
+	else:
+		state = "OutHand"
 func _on_Focus_mouse_exited():
 	state = "OutHand"
 
