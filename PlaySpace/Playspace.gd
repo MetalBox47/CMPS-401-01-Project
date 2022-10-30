@@ -47,29 +47,40 @@ func playCard(card):
 	$Cards.remove_child(card)
 	$"VBoxContainer/Player1Side/VBoxContainer/VBoxContainer/HBoxContainer/Left Gap".add_child(card)
 
-func updateHand(card):
+func playCard(card):
 	$Cards.remove_child(card)
-	var PlayerDeckNode = get_node("VBoxContainer/Player1Side/VBoxContainer/HBoxContainer/VBoxContainer/PlayerDeck")
-	var CardPos_x = PlayerDeckNode.rect_global_position.x
-	var CardPos_y = PlayerDeckNode.rect_global_position.y
-	card.rect_position = Vector2(CardPos_x+incrementer, CardPos_y)
-	$Cards.add_child(card)
-	incrementer += 100
+	
+	var fieldSpot = get_node("VBoxContainer/Player1Side/VBoxContainer/VBoxContainer/HBoxContainer/Left Gap")
+	var CardPos_x = fieldSpot.rect_global_position.x
+	var CardPos_y = fieldSpot.rect_global_position.y
+	card.rect_position = Vector2(CardPos_x+fieldIncrementer, CardPos_y)
+	card.rect_scale *= CardSize/card.rect_size
+	
+	var field = $PlayerField.get_children()
+	
+	$PlayerField.add_child(card)
+	card.setPlay(true)
+	
+	fieldIncrementer += 180
+
+func updateHand():
+	incrementer = 0
+	var cards = $Cards.get_children()
+	for card in cards:
+		var PlayerDeckNode = get_node("VBoxContainer/Player1Side/VBoxContainer/HBoxContainer/VBoxContainer/PlayerDeck")
+		var CardPos_x = PlayerDeckNode.rect_global_position.x
+		var CardPos_y = PlayerDeckNode.rect_global_position.y
+		card.rect_position = Vector2(CardPos_x+incrementer, CardPos_y)
+		incrementer += 100
 
 func _input(event):
 	if Input.is_action_just_released("leftclick"):
 		var cards = $Cards.get_children()
 		for card in cards:
-			var foundCard = false
-			if foundCard:
-				updateHand(card)
-				continue
 			if card.state == "InHand":
 				playCard(card)
-				incrementer -= 100
 				PlayerHandSize -= 1
-				foundCard = true
-				card.setPlay(true)
+				updateHand()
 
 func _ready():
 	# Setting the scale of the background to fit the window
