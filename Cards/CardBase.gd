@@ -63,10 +63,7 @@ func _physics_process(delta):
 
 # functions that emit signals to resize the card when mousehovered
 func _on_Focus_mouse_entered(): 
-	if !inPlay:
-		state = "InHand"
-	else:
-		state = "OutHand"
+	state = "InHand"
 func _on_Focus_mouse_exited():
 	state = "OutHand"
 
