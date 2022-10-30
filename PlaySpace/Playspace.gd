@@ -56,8 +56,6 @@ func playCard(card):
 	card.rect_position = Vector2(CardPos_x+fieldIncrementer, CardPos_y)
 	card.rect_scale *= CardSize/card.rect_size
 	
-	var field = $PlayerField.get_children()
-	
 	$PlayerField.add_child(card)
 	card.setPlay(true)
 	
