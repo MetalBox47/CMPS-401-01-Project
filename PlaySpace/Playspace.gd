@@ -65,14 +65,13 @@ func playCard(card):
 		card.rect_position = Vector2(CardPos_x+fieldIncrementer, CardPos_y)
 		card.rect_scale *= CardSize/card.rect_size
 		cardCounters.append(1)
+    fieldIncrementer += 180
 	else:
 		cardCounters[cardNum] += 1
-	
+    
 	$PlayerField.add_child(card)
 	card.state = "OutHand"
 	card.setPlay(true)
-	
-	fieldIncrementer += 180
 
 func updateHand():
 	incrementer = 0
