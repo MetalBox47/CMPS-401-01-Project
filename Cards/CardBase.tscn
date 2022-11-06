@@ -61,13 +61,13 @@ rect_min_size = Vector2( 195, 135 )
 [node name="Card" type="Sprite" parent="HBoxContainer/Elements/CardImgContainer"]
 centered = false
 
-[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Elements"]
+[node name="Type" type="MarginContainer" parent="HBoxContainer/Elements"]
 margin_top = 192.0
 margin_right = 195.0
 margin_bottom = 212.0
 rect_min_size = Vector2( 195, 20 )
 
-[node name="Label" type="Label" parent="HBoxContainer/Elements/MarginContainer"]
+[node name="Label" type="Label" parent="HBoxContainer/Elements/Type"]
 margin_top = 3.0
 margin_right = 195.0
 margin_bottom = 17.0
