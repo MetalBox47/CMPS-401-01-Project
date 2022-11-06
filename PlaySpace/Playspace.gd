@@ -13,11 +13,14 @@ var DeckSize = PlayerDeck.size()
 
 var PlayerHandSize = 0
 
+var cardCounters = []
+
 #var windowWidth = ProjectSettings.get_setting("display/window/size/width")
 #var windowHeight = ProjectSettings.get_setting("display/window/size/height")
 #var window = Vector2(windowWidth, windowHeight)
 
 var incrementer = 0
+var fieldIncrementer = 0
 # Draws a card from the deck
 func drawCard():
 	if DeckSize <= 0:
@@ -45,21 +48,30 @@ func drawCard():
 
 func playCard(card):
 	$Cards.remove_child(card)
-	$"VBoxContainer/Player1Side/VBoxContainer/VBoxContainer/HBoxContainer/Left Gap".add_child(card)
-
-func playCard(card):
-	$Cards.remove_child(card)
 	
-	var fieldSpot = get_node("VBoxContainer/Player1Side/VBoxContainer/VBoxContainer/HBoxContainer/Left Gap")
-	var CardPos_x = fieldSpot.rect_global_position.x
-	var CardPos_y = fieldSpot.rect_global_position.y
-	card.rect_position = Vector2(CardPos_x+fieldIncrementer, CardPos_y)
-	card.rect_scale *= CardSize/card.rect_size
+	var duplicate = false
+	var cardNum = 0
+	"""for playedCard in $PlayerField:
+		if card.CardName == playedCard.CardName:
+			duplicate = true
+			break
+		else:
+			cardNum += 1"""
 	
+	if !duplicate:
+		var fieldSpot = get_node("VBoxContainer/Player1Side/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer")
+		var CardPos_x = fieldSpot.rect_global_position.x
+		var CardPos_y = fieldSpot.rect_global_position.y
+		card.rect_position = Vector2(CardPos_x+fieldIncrementer, CardPos_y)
+		card.rect_scale *= CardSize/card.rect_size
+		cardCounters.append(1)
+    fieldIncrementer += 180
+	else:
+		cardCounters[cardNum] += 1
+    
 	$PlayerField.add_child(card)
+	card.state = "OutHand"
 	card.setPlay(true)
-	
-	fieldIncrementer += 180
 
 func updateHand():
 	incrementer = 0
@@ -71,14 +83,44 @@ func updateHand():
 		card.rect_position = Vector2(CardPos_x+incrementer, CardPos_y)
 		incrementer += 100
 
+func killCard(card):
+	$PlayerField.remove_child(card)
+	
+	var graveyard = get_node("Graveyard/HBoxContainer")
+	var CardPos_x = graveyard.rect_global_position.x
+	var CardPos_y = graveyard.rect_global_position.y
+	card.rect_position = Vector2(CardPos_x, CardPos_y)
+	card.rect_scale *= CardSize/card.rect_size
+	
+	$Graveyard.add_child(card)
+
+func updateField():
+	fieldIncrementer = 0
+	var field = $PlayerField.get_children()
+	for card in field:
+		var PlayerFieldNode = get_node("VBoxContainer/Player1Side/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer")
+		var CardPos_x = PlayerFieldNode.rect_global_position.x
+		var CardPos_y = PlayerFieldNode.rect_global_position.y
+		card.rect_position = Vector2(CardPos_x+fieldIncrementer, CardPos_y)
+		fieldIncrementer += 180
+
 func _input(event):
+	var playing = false
 	if Input.is_action_just_released("leftclick"):
 		var cards = $Cards.get_children()
 		for card in cards:
 			if card.state == "InHand":
+				playing = true
 				playCard(card)
 				PlayerHandSize -= 1
 				updateHand()
+		
+		if !playing:
+			var field = $PlayerField.get_children()
+			for card in field:
+				if card.state == "InHand":
+					killCard(card)
+					updateField()
 
 func _ready():
 	# Setting the scale of the background to fit the window
@@ -91,3 +133,4 @@ func _ready():
 	while i < 7:
 		drawCard()
 		i += 1
+	print("Graveyard is at ", $Graveyard/HBoxContainer.rect_position)

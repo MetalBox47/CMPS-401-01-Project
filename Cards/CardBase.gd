@@ -32,16 +32,19 @@ func _ready():
 	# Loading the background texture
 	$Background.texture = load(CardBackgroundImg)
 	
-	var cost = CardInfo["cost"]
 	$HBoxContainer/Elements/TopBar/Title/Title.text = CardInfo["name"]
 	$HBoxContainer/Elements/Effect/Label.text = CardInfo["effect"]
+	$HBoxContainer/Elements/Type/Label.add_color_override("font_color", Color(0,0,0,1))
 	match CardType:
 		# This is a switch statement, if you want to add "Spells" key, you can.
 		"Creatures":
+			$HBoxContainer/Elements/Type/Label.text = str(CardInfo["type"], " Creature Cost: ", CardInfo["cost"])
 			var Attack = CardInfo["top_counter"]
 			var Health = CardInfo["bot_counter"]
 			$HBoxContainer/Elements/HBoxContainer/Health/Label.text = str(Health)
 			$HBoxContainer/Elements/HBoxContainer/Attack/Label.text = str(Attack)
+		"Spells":
+			$HBoxContainer/Elements/Type/Label.text = str("Spell Cost: ", CardInfo["cost"])
 	
 	# Re-scales the invisible button to be hovered
 	$Focus.rect_scale *= CardSize/$Focus.rect_size
@@ -62,11 +65,8 @@ func _physics_process(delta):
 			rect_scale = original_scale
 
 # functions that emit signals to resize the card when mousehovered
-func _on_Focus_mouse_entered(): 
-	if !inPlay:
-		state = "InHand"
-	else:
-		state = "OutHand"
+func _on_Focus_mouse_entered():
+	state = "InHand"
 func _on_Focus_mouse_exited():
 	state = "OutHand"
 

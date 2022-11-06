@@ -171,4 +171,12 @@ script = ExtResource( 3 )
 
 [node name="Cards" type="Node2D" parent="."]
 
-[node name="PlayerField" type="Node2D parent="."]
+[node name="PlayerField" type="Node2D" parent="."]
+
+[node name="Graveyard" type="Node2D" parent="."]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Graveyard"]
+margin_left = 92.0
+margin_top = 550.0
+margin_right = 284.0
+margin_bottom = 713.0\
