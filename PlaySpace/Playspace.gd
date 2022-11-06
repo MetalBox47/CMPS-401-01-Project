@@ -13,6 +13,8 @@ var DeckSize = PlayerDeck.size()
 
 var PlayerHandSize = 0
 
+var cardCounters = []
+
 #var windowWidth = ProjectSettings.get_setting("display/window/size/width")
 #var windowHeight = ProjectSettings.get_setting("display/window/size/height")
 #var window = Vector2(windowWidth, windowHeight)
@@ -47,11 +49,24 @@ func drawCard():
 func playCard(card):
 	$Cards.remove_child(card)
 	
-	var fieldSpot = get_node("VBoxContainer/Player1Side/VBoxContainer/VBoxContainer/HBoxContainer/Left Gap")
-	var CardPos_x = fieldSpot.rect_global_position.x
-	var CardPos_y = fieldSpot.rect_global_position.y
-	card.rect_position = Vector2(CardPos_x+fieldIncrementer, CardPos_y)
-	card.rect_scale *= CardSize/card.rect_size
+	var duplicate = false
+	var cardNum = 0
+	"""for playedCard in $PlayerField:
+		if card.CardName == playedCard.CardName:
+			duplicate = true
+			break
+		else:
+			cardNum += 1"""
+	
+	if !duplicate:
+		var fieldSpot = get_node("VBoxContainer/Player1Side/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer")
+		var CardPos_x = fieldSpot.rect_global_position.x
+		var CardPos_y = fieldSpot.rect_global_position.y
+		card.rect_position = Vector2(CardPos_x+fieldIncrementer, CardPos_y)
+		card.rect_scale *= CardSize/card.rect_size
+		cardCounters.append(1)
+	else:
+		cardCounters[cardNum] += 1
 	
 	$PlayerField.add_child(card)
 	card.state = "OutHand"
@@ -84,7 +99,7 @@ func updateField():
 	fieldIncrementer = 0
 	var field = $PlayerField.get_children()
 	for card in field:
-		var PlayerFieldNode = get_node("VBoxContainer/Player1Side/VBoxContainer/VBoxContainer/HBoxContainer/Left Gap")
+		var PlayerFieldNode = get_node("VBoxContainer/Player1Side/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer")
 		var CardPos_x = PlayerFieldNode.rect_global_position.x
 		var CardPos_y = PlayerFieldNode.rect_global_position.y
 		card.rect_position = Vector2(CardPos_x+fieldIncrementer, CardPos_y)
@@ -119,3 +134,4 @@ func _ready():
 	while i < 7:
 		drawCard()
 		i += 1
+	print("Graveyard is at ", $Graveyard/HBoxContainer.rect_position)
