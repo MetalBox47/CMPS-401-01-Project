@@ -15,6 +15,13 @@ var PlayerHandSize = 0
 
 var cardCounters = []
 
+var PlayerHealth
+var OpponentHealth
+
+var phase
+var cards_playable = false
+var battling = false
+
 #var windowWidth = ProjectSettings.get_setting("display/window/size/width")
 #var windowHeight = ProjectSettings.get_setting("display/window/size/height")
 #var window = Vector2(windowWidth, windowHeight)
@@ -49,11 +56,13 @@ func drawCard():
 func playCard(card):
 	$Cards.remove_child(card)
 	
+	var playedPos
 	var duplicate = false
 	var cardNum = 0
 	"""for playedCard in $PlayerField:
 		if card.CardName == playedCard.CardName:
 			duplicate = true
+			playedPos = playedCard.rect_position
 			break
 		else:
 			cardNum += 1"""
@@ -65,13 +74,16 @@ func playCard(card):
 		card.rect_position = Vector2(CardPos_x+fieldIncrementer, CardPos_y)
 		card.rect_scale *= CardSize/card.rect_size
 		cardCounters.append(1)
-    fieldIncrementer += 180
 	else:
+		card.rect_position = Vector2(-20,-20)
+		card.rect_scale = 1
 		cardCounters[cardNum] += 1
-    
+	
 	$PlayerField.add_child(card)
 	card.state = "OutHand"
 	card.setPlay(true)
+	
+	fieldIncrementer += 180
 
 func updateHand():
 	incrementer = 0
@@ -106,7 +118,7 @@ func updateField():
 
 func _input(event):
 	var playing = false
-	if Input.is_action_just_released("leftclick"):
+	if Input.is_action_just_released("leftclick") and cards_playable:
 		var cards = $Cards.get_children()
 		for card in cards:
 			if card.state == "InHand":
@@ -121,6 +133,43 @@ func _input(event):
 				if card.state == "InHand":
 					killCard(card)
 					updateField()
+	
+	if Input.is_action_just_pressed("Change Phase"):
+		if phase == 1:
+			phase = 2
+			process_phases()
+		elif phase == 2:
+			phase = 3
+			process_phases()
+
+func process_phases():
+	match(phase):
+		0:
+			print("Draw Phase")
+			cards_playable = false
+			battling = false
+			drawCard()
+			phase = 1
+			process_phases()
+		1:
+			print("Main Phase")
+			cards_playable = true
+			battling = false
+		2:
+			print("Battle Phase")
+			cards_playable = false
+			battling = true
+		3:
+			print("End Phase")
+			cards_playable = false
+			battling = false
+			get_tree().quit()
+
+func _process(delta):
+	if PlayerHealth <= 0:
+		print("You Lose!")
+	if OpponentHealth <= 0:
+		print("You Win!")
 
 func _ready():
 	# Setting the scale of the background to fit the window
@@ -133,4 +182,7 @@ func _ready():
 	while i < 7:
 		drawCard()
 		i += 1
-	print("Graveyard is at ", $Graveyard/HBoxContainer.rect_position)
+	PlayerHealth = 40
+	OpponentHealth = 40
+	phase = 0
+	process_phases()
