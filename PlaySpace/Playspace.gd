@@ -1,5 +1,17 @@
 extends Node2D
 
+enum CardOptions {
+	PLAY
+	BATTLE
+	SENDTOGY
+}
+
+enum DeckOptions {
+	DRAW
+	MILL
+	FORFEIT
+}
+
 const CardBase = preload("res://Cards/CardBase.tscn") #preloading the CardBase
 const CardFocus = preload("res://Cards/CardBase.gd")
 var CardSize = Vector2(125,175) #This is half the size of the card
@@ -58,14 +70,24 @@ func playCard(card):
 	
 	var playedPos
 	var duplicate = false
+	var in_stack = false
+	var storedName = ''
 	var cardNum = 0
-	"""for playedCard in $PlayerField:
+	for playedCard in $PlayerField.get_children():
+		if in_stack and playedCard.CardName == storedName:
+			playedPos = playedCard.rect_position
+			continue
+		elif !in_stack and playedCard.CardName == storedName:
+			continue
+		
 		if card.CardName == playedCard.CardName:
 			duplicate = true
+			in_stack = true
+			storedName = playedCard.CardName
 			playedPos = playedCard.rect_position
-			break
 		else:
-			cardNum += 1"""
+			storedName = playedCard.CardName
+			cardNum += 1
 	
 	if !duplicate:
 		var fieldSpot = get_node("VBoxContainer/Player1Side/VBoxContainer/VBoxContainer/HBoxContainer/MarginContainer")
@@ -74,16 +96,15 @@ func playCard(card):
 		card.rect_position = Vector2(CardPos_x+fieldIncrementer, CardPos_y)
 		card.rect_scale *= CardSize/card.rect_size
 		cardCounters.append(1)
+		fieldIncrementer += 180
 	else:
-		card.rect_position = Vector2(-20,-20)
-		card.rect_scale = 1
+		card.rect_scale *= CardSize/card.rect_size
 		cardCounters[cardNum] += 1
+		card.rect_position = Vector2(playedPos.x + (cardCounters[cardNum] * 10), playedPos.y)
 	
 	$PlayerField.add_child(card)
 	card.state = "OutHand"
 	card.setPlay(true)
-	
-	fieldIncrementer += 180
 
 func updateHand():
 	incrementer = 0
