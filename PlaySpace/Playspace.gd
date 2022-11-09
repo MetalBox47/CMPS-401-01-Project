@@ -1,17 +1,5 @@
 extends Node2D
 
-enum CardOptions {
-	PLAY
-	BATTLE
-	SENDTOGY
-}
-
-enum DeckOptions {
-	DRAW
-	MILL
-	FORFEIT
-}
-
 const CardBase = preload("res://Cards/CardBase.tscn") #preloading the CardBase
 const CardFocus = preload("res://Cards/CardBase.gd")
 var CardSize = Vector2(125,175) #This is half the size of the card
@@ -22,6 +10,9 @@ const PlayerDeck = [["Umbot_Factory", "Spells"],["Umbot_Factory", "Spells"],["Um
 
 var CardSelected = [] # Holds an int
 var DeckSize = PlayerDeck.size()
+
+var deck_popup = PopupMenu.new()
+var grave_popup = PopupMenu.new()
 
 var PlayerHandSize = 0
 
@@ -40,6 +31,7 @@ var battling = false
 
 var incrementer = 0
 var fieldIncrementer = 0
+
 # Draws a card from the deck
 func drawCard():
 	if DeckSize <= 0:
@@ -48,9 +40,8 @@ func drawCard():
 		return
 	
 	var new_card = CardBase.instance() # The CardBase node is initialized
-	CardSelected = randi() % DeckSize # Assigns an random int, with respect to the DeckSize
-	new_card.CardType = PlayerDeck[CardSelected][1]
-	new_card.CardName = PlayerDeck[CardSelected][0]
+	new_card.CardType = PlayerDeck[0][1]
+	new_card.CardName = PlayerDeck[0][0]
 	
 	var PlayerDeckNode = get_node("VBoxContainer/Player1Side/VBoxContainer/HBoxContainer/VBoxContainer/PlayerDeck")
 	var CardPos_x = PlayerDeckNode.rect_global_position.x
@@ -60,10 +51,15 @@ func drawCard():
 	
 	$Cards.add_child(new_card)
 	
-	PlayerDeck.erase(PlayerDeck[CardSelected])
+	PlayerDeck.remove(0)
 	DeckSize -= 1
 	PlayerHandSize += 1
 	incrementer += 100
+
+func mill():
+	if DeckSize <= 0:
+		return
+	
 
 func playCard(card):
 	$Cards.remove_child(card)
@@ -137,13 +133,54 @@ func updateField():
 		card.rect_position = Vector2(CardPos_x+fieldIncrementer, CardPos_y)
 		fieldIncrementer += 180
 
+func hand_popup_manager(popup, card, turn_phase):
+	if turn_phase == 1:
+		popup.clear()
+		popup.add_check_item("Play")
+		popup.add_check_item("Discard")
+		popup.add_check_item("Shuffle")
+	else:
+		popup.clear()
+
+func field_popup_manager(popup, card, turn_phase):
+	match turn_phase:
+		0:
+			popup.clear()
+		1:
+			popup.clear()
+			popup.add_check_item("Kill")
+			popup.add_check_item("Return to Hand")
+		2:
+			popup.clear()
+			popup.add_check_item("Kill")
+			popup.add_check_item("Battle")
+		3:
+			popup.clear()
+
+func deck_popup_manager(turn_phase):
+	if turn_phase == 1:
+		deck_popup.clear()
+		deck_popup.add_check_item("Draw")
+		deck_popup.add_check_item("Mill")
+		deck_popup.add_check_item("Forfeit")
+	else:
+		deck_popup.clear()
+		deck_popup.add_check_item("Forfeit")
+
+func grave_popup_manager():
+	grave_popup.clear()
+	grave_popup.add_check_item("View")
+
 func _input(event):
 	var playing = false
-	if Input.is_action_just_released("leftclick") and cards_playable:
+	if Input.is_action_just_released("leftclick"):
 		var cards = $Cards.get_children()
 		for card in cards:
 			if card.state == "InHand":
 				playing = true
+				var popup = card.popup
+				popup.rect_position = event.position
+				hand_popup_manager(popup, card, phase)
 				playCard(card)
 				PlayerHandSize -= 1
 				updateHand()
@@ -152,6 +189,9 @@ func _input(event):
 			var field = $PlayerField.get_children()
 			for card in field:
 				if card.state == "InHand":
+					var popup = card.popup
+					popup.rect_position = event.position
+					#popup_manager(popup, card, phase)
 					killCard(card)
 					updateField()
 	
@@ -199,6 +239,9 @@ func _ready():
 	var vboxcontainerscale = viewportWidth/$VBoxContainer.rect_size.x
 	$DuelBackground.set_scale(Vector2(viewportscale, viewportscale))
 	$VBoxContainer.set_scale(Vector2(vboxcontainerscale, vboxcontainerscale))
+	$DrawDeck/DrawButton.add_child(deck_popup)
+	$Graveyard/HBoxContainer.add_child(grave_popup)
+	PlayerDeck.shuffle()
 	var i = 0
 	while i < 7:
 		drawCard()
