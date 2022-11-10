@@ -186,3 +186,25 @@ script = ExtResource( 5 )
 [node name="PopupMenu" type="PopupMenu" parent="."]
 margin_right = 20.0
 margin_bottom = 20.0
+
+[node name="OppField" type="Node2D" parent="."]
+
+[node name="PlayerHealth" type="HBoxContainer" parent="."]
+margin_left = 100.0
+margin_top = 723.0
+margin_right = 319.0
+margin_bottom = 894.0
+
+[node name="Label" type="Label" parent="PlayerHealth"]
+margin_top = 78.0
+margin_bottom = 92.0
+
+[node name="OppHealth" type="HBoxContainer" parent="."]
+margin_left = 121.0
+margin_top = 27.0
+margin_right = 311.0
+margin_bottom = 208.0
+
+[node name="Label" type="Label" parent="OppHealth"]
+margin_top = 83.0
+margin_bottom = 97.0
