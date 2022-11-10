@@ -38,6 +38,10 @@ func _ready():
 		var CardImg = str("res://Assets/",CardInfo.name, ".png")
 		$HBoxContainer/Elements/CardImgContainer/Card.texture = load(CardImg)
 		$HBoxContainer/Elements/CardImgContainer/Card.scale *= CardImgContainer.get_size()/CardTexture.texture.get_size()
+	if directory.file_exists(str("res://Assets/",CardInfo.name, ".jpg")):
+		var CardImg = str("res://Assets/",CardInfo.name, ".jpg")
+		$HBoxContainer/Elements/CardImgContainer/Card.texture = load(CardImg)
+		$HBoxContainer/Elements/CardImgContainer/Card.scale *= CardImgContainer.get_size()/CardTexture.texture.get_size()
 #	$Focus.rect_scale *= CardSize/$Focus.rect_size
 	# Loading the background texture
 	$Background.texture = load(CardBackgroundImg)
