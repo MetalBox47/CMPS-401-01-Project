@@ -14,6 +14,8 @@ enum PopupId {
 	VIEWGRAVE
 }
 
+#onready var deck_node = get_node("/root/DeckBuilder/DeckBuilder")
+
 const main_icon = preload("res://Asset/Main_Phase_Icon.png")
 const battle_icon = preload("res://Asset/Attack_Phase_Icon.png")
 
@@ -22,8 +24,19 @@ const CardFocus = preload("res://Cards/CardBase.gd")
 var CardSize = Vector2(125,175) #This is half the size of the card
 
 # The PlayerDeck has to be a 2D array, [CardName, CardType]
-# This is a test dummy player deck
-const PlayerDeck = [["Umbot_Factory", "Spells"],["Umbot_Factory", "Spells"],["Umbot_Lanu", "Creatures"],["Umbot_Lanu", "Creatures"], ["Umbot_Plum", "Creatures"], ["Umbot_Zuma", "Creatures"], ["Umbot_Skal", "Creatures"], ["Umbot_Skal", "Creatures"]]
+const PlayerDeck = [["Umbot_Lanu", "Creatures"], ["Umbot_Lanu", "Creatures"], ["Umbot_Lanu", "Creatures"], ["Umbot_Lanu", "Creatures"], ["Umbot_Lanu", "Creatures"],
+["Umbot_Plum", "Creatures"], ["Umbot_Plum", "Creatures"], ["Umbot_Plum", "Creatures"], ["Umbot_Plum", "Creatures"], ["Umbot_Plum", "Creatures"],
+["Umbot_Zuma", "Creatures"], ["Umbot_Zuma", "Creatures"], ["Umbot_Zuma", "Creatures"], ["Umbot_Zuma", "Creatures"], ["Umbot_Zuma", "Creatures"],
+["Umbot_Skal", "Creatures"], ["Umbot_Skal", "Creatures"], ["Umbot_Skal", "Creatures"], ["Umbot_Skal", "Creatures"], ["Umbot_Skal", "Creatures"],
+["Umbot_Fisa", "Creatures"], ["Umbot_Fisa", "Creatures"], ["Umbot_Fisa", "Creatures"], ["Umbot_Fisa", "Creatures"], ["Umbot_Fisa", "Creatures"],
+["Umbot_Champion_Vila", "Creatures"], ["Umbot_Champion_Vila", "Creatures"], ["Umbot_Champion_Vila", "Creatures"], ["Umbot_Champion_Vila", "Creatures"], ["Lunarbird_Eule", "Creatures"], ["Lunarbird_Eule", "Creatures"],
+["Lunarbird_Eule", "Creatures"], ["Lunarbird_Eule", "Creatures"], ["Lunarbird_Eule", "Creatures"], ["Counter", "Spells"],
+["Counter", "Spells"], ["Counter", "Spells"], ["Counter", "Spells"], ["Counter", "Spells"], ["Umbot_Parade", "Spells"], ["Umbot_Parade", "Spells"], ["Umbot_Parade", "Spells"], ["Umbot_Factory", "Spells"],
+["Umbot_Factory", "Spells"], ["Umbot_Factory", "Spells"],["Umbot_Factory", "Spells"],["Umbot_Factory", "Spells"],["Clear Weather", "Spells"],
+["Clear_Weather", "Spells"], ["Clear_Weather", "Spells"], ["Clear_Weather", "Spells"], ["Copy_Machine", "Spells"],
+["Copy_Machine", "Spells"], ["Copy_Machine", "Spells"], ["Copy_Machine", "Spells"], ["Bird_Call", "Spells"], ["Bird_Call", "Spells"], ["Bird_Call", "Spell"],
+["Bird_Call", "Spells"], ["Bird_Call", "Spells"]]
+#var PlayerDeck = deck_node.deck
 
 var GraveArr = []
 
@@ -53,6 +66,10 @@ var default_weather
 
 var energy
 var start_energy
+
+var paused = false
+
+var squish_factor = 0
 
 #var windowWidth = ProjectSettings.get_setting("display/window/size/width")
 #var windowHeight = ProjectSettings.get_setting("display/window/size/height")
@@ -95,7 +112,7 @@ func drawCard():
 	PlayerDeck.remove(0)
 	DeckSize -= 1
 	PlayerHandSize += 1
-	incrementer += 100
+	updateHand()
 
 func mill():
 	if DeckSize <= 0:
@@ -182,17 +199,21 @@ func return_card_to_hand(card):
 	card.rect_scale *= CardSize/card.rect_size # Re-scaling to fit the playspace
 	$Cards.add_child(card)
 	PlayerHandSize += 1
-	incrementer += 100
+	updateHand()
 
 func updateHand():
 	incrementer = 0
 	var cards = $Cards.get_children()
+	if $Cards.get_child_count() > 8:
+		squish_factor = ($Cards.get_child_count() - 7) * 7
+	else:
+		squish_factor = 0
 	for card in cards:
 		var PlayerDeckNode = get_node("VBoxContainer/Player1Side/VBoxContainer/HBoxContainer/VBoxContainer/PlayerDeck")
 		var CardPos_x = PlayerDeckNode.rect_global_position.x
 		var CardPos_y = PlayerDeckNode.rect_global_position.y
 		card.rect_position = Vector2(CardPos_x+incrementer, CardPos_y)
-		incrementer += 100
+		incrementer += 100 - squish_factor
 
 func killCard(card):
 	if card.get_parent() == $Cards:
@@ -266,8 +287,11 @@ func attack(card):
 	
 	card.has_attacked = true
 
+func debug():
+	paused = !paused
+
 func _input(event):
-	if Input.is_action_just_released("leftclick"):
+	if Input.is_action_just_released("leftclick") and !paused:
 		click_pos = event.position
 		
 		if checking_attacks:
@@ -294,13 +318,8 @@ func _input(event):
 				pm.popup(Rect2(event.position.x, event.position.y, pm.rect_size.x, pm.rect_size.y))
 				field_pop()
 	
-	if Input.is_action_just_pressed("Change Phase"):
-		if phase == 1:
-			phase = 2
-			process_phases()
-		elif phase == 2:
-			phase = 3
-			process_phases()
+	if Input.is_action_just_pressed("Scene Debug"):
+		debug()
 
 func _on_PopupMenu_id_pressed(id):
 	match id:
