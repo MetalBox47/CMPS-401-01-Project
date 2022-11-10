@@ -179,4 +179,8 @@ script = ExtResource( 3 )
 margin_left = 92.0
 margin_top = 550.0
 margin_right = 284.0
-margin_bottom = 713.0\
+margin_bottom = 713.0
+
+[node name="PopupMenu" type="PopupMenu" parent="."]
+margin_right = 20.0
+margin_bottom = 20.0
