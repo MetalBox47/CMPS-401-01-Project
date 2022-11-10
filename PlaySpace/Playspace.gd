@@ -34,7 +34,7 @@ const PlayerDeck = [["Umbot_Lanu", "Creatures"], ["Umbot_Lanu", "Creatures"], ["
 ["Counter", "Spells"], ["Counter", "Spells"], ["Counter", "Spells"], ["Counter", "Spells"], ["Umbot_Parade", "Spells"], ["Umbot_Parade", "Spells"], ["Umbot_Parade", "Spells"], ["Umbot_Factory", "Spells"],
 ["Umbot_Factory", "Spells"], ["Umbot_Factory", "Spells"],["Umbot_Factory", "Spells"],["Umbot_Factory", "Spells"],["Clear_Weather", "Spells"],
 ["Clear_Weather", "Spells"], ["Clear_Weather", "Spells"], ["Clear_Weather", "Spells"], ["Copy_Machine", "Spells"],
-["Copy_Machine", "Spells"], ["Copy_Machine", "Spells"], ["Copy_Machine", "Spells"], ["Bird_Call", "Spells"], ["Bird_Call", "Spells"], ["Bird_Call", "Spell"],
+["Copy_Machine", "Spells"], ["Copy_Machine", "Spells"], ["Copy_Machine", "Spells"], ["Bird_Call", "Spells"], ["Bird_Call", "Spells"], ["Bird_Call", "Spells"],
 ["Bird_Call", "Spells"], ["Bird_Call", "Spells"]]
 #var PlayerDeck = deck_node.deck
 
@@ -60,7 +60,6 @@ var battling = false
 
 var selected_card
 
-var chance = rand_range(0,101)
 var weather
 var default_weather
 
@@ -79,6 +78,7 @@ var incrementer = 0
 var fieldIncrementer = 0
 
 func checkWeather(percent):
+	randomize()
 	if percent < 55:
 		default_weather = 0
 	elif percent >= 55 and percent < 70:
@@ -422,7 +422,9 @@ func _ready():
 	$VBoxContainer.set_scale(Vector2(vboxcontainerscale, vboxcontainerscale))
 	pm.connect("id_pressed", self, "_on_PopupMenu_id_pressed")
 	pm.connect("index_pressed", self, "_on_PopupMenu_index_pressed")
+	randomize()
 	PlayerDeck.shuffle()
+	var chance = rand_range(0,101)
 	checkWeather(chance)
 	print(chance)
 	weather = default_weather
