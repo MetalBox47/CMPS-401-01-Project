@@ -425,10 +425,8 @@ func _ready():
 	print(chance)
 	weather = default_weather
 	print(weather)
-	var i = 0
-	while i < 7:
+	for i in range(7):
 		drawCard()
-		i += 1
 	PlayerHealth = 40
 	OpponentHealth = 40
 	start_energy = 4
