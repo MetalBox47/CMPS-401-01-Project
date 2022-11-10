@@ -32,7 +32,7 @@ const PlayerDeck = [["Umbot_Lanu", "Creatures"], ["Umbot_Lanu", "Creatures"], ["
 ["Umbot_Champion_Vila", "Creatures"], ["Umbot_Champion_Vila", "Creatures"], ["Umbot_Champion_Vila", "Creatures"], ["Umbot_Champion_Vila", "Creatures"], ["Lunarbird_Eule", "Creatures"], ["Lunarbird_Eule", "Creatures"],
 ["Lunarbird_Eule", "Creatures"], ["Lunarbird_Eule", "Creatures"], ["Lunarbird_Eule", "Creatures"], ["Counter", "Spells"],
 ["Counter", "Spells"], ["Counter", "Spells"], ["Counter", "Spells"], ["Counter", "Spells"], ["Umbot_Parade", "Spells"], ["Umbot_Parade", "Spells"], ["Umbot_Parade", "Spells"], ["Umbot_Factory", "Spells"],
-["Umbot_Factory", "Spells"], ["Umbot_Factory", "Spells"],["Umbot_Factory", "Spells"],["Umbot_Factory", "Spells"],["Clear Weather", "Spells"],
+["Umbot_Factory", "Spells"], ["Umbot_Factory", "Spells"],["Umbot_Factory", "Spells"],["Umbot_Factory", "Spells"],["Clear_Weather", "Spells"],
 ["Clear_Weather", "Spells"], ["Clear_Weather", "Spells"], ["Clear_Weather", "Spells"], ["Copy_Machine", "Spells"],
 ["Copy_Machine", "Spells"], ["Copy_Machine", "Spells"], ["Copy_Machine", "Spells"], ["Bird_Call", "Spells"], ["Bird_Call", "Spells"], ["Bird_Call", "Spell"],
 ["Bird_Call", "Spells"], ["Bird_Call", "Spells"]]
@@ -206,6 +206,8 @@ func updateHand():
 	var cards = $Cards.get_children()
 	if $Cards.get_child_count() > 8:
 		squish_factor = ($Cards.get_child_count() - 7) * 7
+		if squish_factor > 75:
+			squish_factor = 75
 	else:
 		squish_factor = 0
 	for card in cards:
