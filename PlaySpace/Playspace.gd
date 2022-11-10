@@ -378,7 +378,6 @@ func process_phases():
 				start_energy += 2
 			cards_playable = false
 			battling = false
-			get_tree().quit()
 
 func _process(delta):
 	$PlayerHealth/Label.text = str(PlayerHealth)
