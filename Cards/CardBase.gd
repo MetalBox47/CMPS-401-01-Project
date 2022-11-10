@@ -16,12 +16,14 @@ var CardName = "Umbot_Skal"
 onready var CardInfo = CardDatabase.DATA[CardType][CardName]
 onready var CardImg = str("res://Assets/",CardInfo.name, ".png")
 onready var CardBackgroundImg = str("res://Asset/",CardInfo.rarity,".png")
+onready var cost = int(CardInfo.cost)
 
 var CardTexture
 var CardImgContainer
 var CardSize = rect_size
 # rect_size is the size of the "CardBase" container
 # We may not use CardSize, this is just to show how to extract it.
+
 func _ready():
 	# loading the small CardImg and setting its scale to the card borders
 	CardImgContainer = get_node("HBoxContainer/Elements/CardImgContainer")
@@ -50,7 +52,7 @@ func _ready():
 	$Focus.rect_scale *= CardSize/$Focus.rect_size
 	print($Background.scale)
 	print(CardTexture.texture.get_size())
-	
+
 # List of scales to be used for the card onhover resizing
 var state = "OutHand"
 var inPlay = false
