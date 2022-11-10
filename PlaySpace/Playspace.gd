@@ -73,7 +73,7 @@ func checkWeather(percent):
 # Draws a card from the deck
 func drawCard():
 	if DeckSize <= 0:
-		get_tree().quit()
+		get_tree().change_scene("res://MainMenu.tscn")
 		print("You Lose")
 		return
 	
@@ -320,7 +320,7 @@ func _on_PopupMenu_id_pressed(id):
 		PopupId.VIEWDECK:
 			pass
 		PopupId.FORFEIT:
-			get_tree().quit()
+			get_tree().change_scene("res://MainMenu.tscn")
 		PopupId.VIEWGRAVE:
 			pass
 
@@ -356,12 +356,15 @@ func process_phases():
 			get_tree().quit()
 
 func _process(delta):
+	$PlayerHealth/Label.text = str(PlayerHealth)
+	$OppHealth/Label.text = str(OpponentHealth)
+	
 	if PlayerHealth <= 0:
 		print("You Lose!")
-		get_tree().quit()
+		get_tree().change_scene("res://MainMenu.tscn")
 	if OpponentHealth <= 0:
 		print("You Win!")
-		get_tree().quit()
+		get_tree().change_scene("res://MainMenu.tscn")
 	
 	for card in $PlayerField.get_children():
 		if card.hp <= 0:
