@@ -127,6 +127,7 @@ func shuffle_card(card):
 func playCard(card):
 	$Cards.remove_child(card)
 	updateHand()
+	energy -= card.cost
 	var playedPos
 	var duplicate = false
 	var in_stack = false
@@ -230,6 +231,8 @@ func hand_pop():
 
 func field_pop():
 	pm.clear()
+	if phase == 2 and !selected_card.has_attacked:
+		pm.add_item("Attack", PopupId.ATTACK)
 	pm.add_item("Kill", PopupId.KILL)
 	pm.add_item("Return to Hand", PopupId.ADDTOHAND)
 	pm.add_item("Shuffle", PopupId.SHUFFLE)
@@ -246,11 +249,32 @@ func deck_pop():
 func grave_pop():
 	pm.clear()
 	pm.add_item("View", PopupId.VIEWGRAVE)
+
+var checking_attacks = false
+var attack_target
+
+func attack(card):
+	if $OppField.get_child_count() == 0:
+		OpponentHealth -= card.atk
+		print(OpponentHealth)
+	else:
+		checking_attacks = true
+		attack_target.hp -= card.atk
 	
+	card.has_attacked = true
 
 func _input(event):
 	if Input.is_action_just_released("leftclick"):
 		click_pos = event.position
+		
+		if checking_attacks:
+			for card in $OppField.get_children():
+				if card.state == "InHand":
+					attack_target = card
+					checking_attacks = false
+					return
+			checking_attacks = false
+		
 		var cards = $Cards.get_children()
 		for card in cards:
 			if card.state == "InHand":
@@ -286,7 +310,7 @@ func _on_PopupMenu_id_pressed(id):
 		PopupId.ADDTOHAND:
 			return_card_to_hand(selected_card)
 		PopupId.ATTACK:
-			pass
+			attack(selected_card)
 		PopupId.DRAW:
 			drawCard()
 		PopupId.MILL:
@@ -308,6 +332,8 @@ func process_phases():
 		0:
 			print("Draw Phase")
 			energy = start_energy
+			for card in $PlayerField.get_children():
+				card.has_attacked = false
 			cards_playable = false
 			battling = false
 			drawCard()
@@ -332,8 +358,19 @@ func process_phases():
 func _process(delta):
 	if PlayerHealth <= 0:
 		print("You Lose!")
+		get_tree().quit()
 	if OpponentHealth <= 0:
 		print("You Win!")
+		get_tree().quit()
+	
+	for card in $PlayerField.get_children():
+		if card.hp <= 0:
+			killCard(card)
+			card.hp = card.base_hp
+	
+	for card in $OppField.get_children():
+		if card.hp <= 0:
+			$OppField.remove_child(card)
 	
 	if $DrawDeck/DrawButton.deck_clicked:
 		pm.popup(Rect2(click_pos.x, click_pos.y, pm.rect_size.x, pm.rect_size.y))
@@ -363,6 +400,6 @@ func _ready():
 		i += 1
 	PlayerHealth = 40
 	OpponentHealth = 40
-	start_energy = 2
+	start_energy = 4
 	phase = 0
 	process_phases()
