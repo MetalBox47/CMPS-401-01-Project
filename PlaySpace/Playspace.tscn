@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://PlaySpace/Playspace.gd" type="Script" id=1]
 [ext_resource path="res://Asset/DrawButton.png" type="Texture" id=2]
 [ext_resource path="res://PlaySpace/DrawButton.gd" type="Script" id=3]
 [ext_resource path="res://Asset/background_color.png" type="Texture" id=4]
+[ext_resource path="res://PlaySpace/GraveCards.gd" type="Script" id=5]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node2D
@@ -175,11 +176,12 @@ script = ExtResource( 3 )
 
 [node name="Graveyard" type="Node2D" parent="."]
 
-[node name="HBoxContainer" type="HBoxContainer" parent="Graveyard"]
+[node name="GraveCards" type="HBoxContainer" parent="Graveyard"]
 margin_left = 92.0
 margin_top = 550.0
 margin_right = 284.0
 margin_bottom = 713.0
+script = ExtResource( 5 )
 
 [node name="PopupMenu" type="PopupMenu" parent="."]
 margin_right = 20.0

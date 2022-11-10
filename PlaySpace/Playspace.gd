@@ -1,11 +1,17 @@
 extends Node2D
 
-enum CardPopupId {
+enum PopupId {
 	PLAY
 	ATTACK
 	KILL
 	ADDTOHAND
 	SHUFFLE
+	DRAW
+	MILL
+	VIEWDECK
+	SHUFFLEDECK
+	FORFEIT
+	VIEWGRAVE
 }
 
 const CardBase = preload("res://Cards/CardBase.tscn") #preloading the CardBase
@@ -30,11 +36,17 @@ var cardCounters = []
 var PlayerHealth
 var OpponentHealth
 
+var click_pos
+
 var phase
 var cards_playable = false
 var battling = false
 
 var selected_card
+
+var chance = rand_range(0,101)
+var weather
+var default_weather
 
 #var windowWidth = ProjectSettings.get_setting("display/window/size/width")
 #var windowHeight = ProjectSettings.get_setting("display/window/size/height")
@@ -42,6 +54,18 @@ var selected_card
 
 var incrementer = 0
 var fieldIncrementer = 0
+
+func checkWeather(percent):
+	if percent < 55:
+		default_weather = 0
+	elif percent >= 55 and percent < 70:
+		default_weather = 1
+	elif percent >= 70 and percent < 80:
+		default_weather = 2
+	elif percent >= 80 and percent < 99:
+		default_weather = 3
+	else:
+		default_weather = 4
 
 # Draws a card from the deck
 func drawCard():
@@ -75,15 +99,16 @@ func mill():
 	new_card.CardType = PlayerDeck[0][1]
 	new_card.CardName = PlayerDeck[0][0]
 	
-	var PlayerDeckNode = get_node("Graveyard/HBoxContainer")
+	var PlayerDeckNode = get_node("Graveyard/GraveCards")
 	var CardPos_x = PlayerDeckNode.rect_global_position.x
 	var CardPos_y = PlayerDeckNode.rect_global_position.y
 	new_card.rect_position = Vector2(CardPos_x, CardPos_y) # Assigns a global position to the card with respect to its container
 	new_card.rect_scale *= CardSize/new_card.rect_size # Re-scaling to fit the playspace
 	
 	$Graveyard.add_child(new_card)
-	
+	GraveArr.append([new_card.CardName, new_card.CardType])
 	PlayerDeck.remove(0)
+	DeckSize -= 1
 
 func shuffle_card(card):
 	var parent = card.get_parent()
@@ -165,20 +190,22 @@ func updateHand():
 func killCard(card):
 	if card.get_parent() == $Cards:
 		$Cards.remove_child(card)
-		var graveyard = get_node("Graveyard/HBoxContainer")
+		var graveyard = get_node("Graveyard/GraveCards")
 		var CardPos_x = graveyard.rect_global_position.x
 		var CardPos_y = graveyard.rect_global_position.y
 		card.rect_position = Vector2(CardPos_x, CardPos_y)
 		card.rect_scale *= CardSize/card.rect_size
 		$Graveyard.add_child(card)
+		updateHand()
 	elif card.get_parent() == $PlayerField:
 		$PlayerField.remove_child(card)
-		var graveyard = get_node("Graveyard/HBoxContainer")
+		var graveyard = get_node("Graveyard/GraveCards")
 		var CardPos_x = graveyard.rect_global_position.x
 		var CardPos_y = graveyard.rect_global_position.y
 		card.rect_position = Vector2(CardPos_x, CardPos_y)
 		card.rect_scale *= CardSize/card.rect_size
 		$Graveyard.add_child(card)
+		GraveArr.append([card.CardName, card.CardType])
 		updateField()
 
 func updateField():
@@ -192,49 +219,50 @@ func updateField():
 		fieldIncrementer += 180
 
 func hand_pop():
-	if phase == 1:
-		pm.clear()
-		pm.add_item("Play", CardPopupId.PLAY)
-		pm.add_item("Discard", CardPopupId.KILL)
-		pm.add_item("Shuffle", CardPopupId.SHUFFLE)
-	else:
-		pm.clear()
+	pm.clear()
+	pm.add_item("Play", PopupId.PLAY)
+	pm.add_item("Discard", PopupId.KILL)
+	pm.add_item("Shuffle", PopupId.SHUFFLE)
 
 func field_pop():
-	match phase:
-		0:
-			pm.clear()
-		1:
-			pm.clear()
-			pm.add_item("Kill", CardPopupId.KILL)
-			pm.add_item("Return to Hand", CardPopupId.ADDTOHAND)
-			pm.add_item("Shuffle", CardPopupId.SHUFFLE)
-		2:
-			pm.clear()
-			pm.add_item("Attack", CardPopupId.ATTACK)
-			pm.add_item("Kill", CardPopupId.KILL)
-			pm.add_item("Return to Hand", CardPopupId.ADDTOHAND)
-		3:
-			pm.clear()
+	pm.clear()
+	pm.add_item("Kill", PopupId.KILL)
+	pm.add_item("Return to Hand", PopupId.ADDTOHAND)
+	pm.add_item("Shuffle", PopupId.SHUFFLE)
+	pm.add_item("Return to Hand", PopupId.ADDTOHAND)
+
+func deck_pop():
+	pm.clear()
+	if DeckSize > 0:
+		pm.add_item("Draw", PopupId.DRAW)
+		pm.add_item("Mill", PopupId.MILL)
+		pm.add_item("Shuffle", PopupId.SHUFFLEDECK)
+		pm.add_item("View", PopupId.VIEWDECK)
+	pm.add_item("Forfeit", PopupId.FORFEIT)
+
+func grave_pop():
+	pm.clear()
+	pm.add_item("View", PopupId.VIEWGRAVE)
+	
 
 func _input(event):
-	var playing = false
 	if Input.is_action_just_released("leftclick"):
+		click_pos = event.position
 		var cards = $Cards.get_children()
 		for card in cards:
 			if card.state == "InHand":
 				selected_card = card
 				pm.popup(Rect2(event.position.x, event.position.y, pm.rect_size.x, pm.rect_size.y))
 				hand_pop()
-				playing = true
+				return
 		
-		if !playing:
-			var field = $PlayerField.get_children()
-			for card in field:
-				if card.state == "InHand":
-					selected_card = card
-					pm.popup(Rect2(event.position.x, event.position.y, pm.rect_size.x, pm.rect_size.y))
-					field_pop()
+		
+		var field = $PlayerField.get_children()
+		for card in field:
+			if card.state == "InHand":
+				selected_card = card
+				pm.popup(Rect2(event.position.x, event.position.y, pm.rect_size.x, pm.rect_size.y))
+				field_pop()
 	
 	if Input.is_action_just_pressed("Change Phase"):
 		if phase == 1:
@@ -246,15 +274,27 @@ func _input(event):
 
 func _on_PopupMenu_id_pressed(id):
 	match id:
-		CardPopupId.PLAY:
+		PopupId.PLAY:
 			playCard(selected_card)
-		CardPopupId.KILL:
+		PopupId.KILL:
 			killCard(selected_card)
-		CardPopupId.SHUFFLE:
+		PopupId.SHUFFLE:
 			shuffle_card(selected_card)
-		CardPopupId.ADDTOHAND:
+		PopupId.ADDTOHAND:
 			return_card_to_hand(selected_card)
-		CardPopupId.ATTACK:
+		PopupId.ATTACK:
+			pass
+		PopupId.DRAW:
+			drawCard()
+		PopupId.MILL:
+			mill()
+		PopupId.SHUFFLEDECK:
+			PlayerDeck.shuffle()
+		PopupId.VIEWDECK:
+			pass
+		PopupId.FORFEIT:
+			get_tree().quit()
+		PopupId.VIEWGRAVE:
 			pass
 
 func _on_PopupMenu_index_pressed(index):
@@ -288,6 +328,14 @@ func _process(delta):
 		print("You Lose!")
 	if OpponentHealth <= 0:
 		print("You Win!")
+	
+	if $DrawDeck/DrawButton.deck_clicked:
+		pm.popup(Rect2(click_pos.x, click_pos.y, pm.rect_size.x, pm.rect_size.y))
+		deck_pop()
+	
+	if $Graveyard/GraveCards.grave_clicked:
+		pm.popup(Rect2(click_pos.x, click_pos.y, pm.rect_size.x, pm.rect_size.y))
+		grave_pop()
 
 func _ready():
 	# Setting the scale of the background to fit the window
@@ -299,6 +347,10 @@ func _ready():
 	pm.connect("id_pressed", self, "_on_PopupMenu_id_pressed")
 	pm.connect("index_pressed", self, "_on_PopupMenu_index_pressed")
 	PlayerDeck.shuffle()
+	checkWeather(chance)
+	print(chance)
+	weather = default_weather
+	print(weather)
 	var i = 0
 	while i < 7:
 		drawCard()
