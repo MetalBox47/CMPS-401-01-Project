@@ -48,6 +48,9 @@ var chance = rand_range(0,101)
 var weather
 var default_weather
 
+var energy
+var start_energy
+
 #var windowWidth = ProjectSettings.get_setting("display/window/size/width")
 #var windowHeight = ProjectSettings.get_setting("display/window/size/height")
 #var window = Vector2(windowWidth, windowHeight)
@@ -220,7 +223,8 @@ func updateField():
 
 func hand_pop():
 	pm.clear()
-	pm.add_item("Play", PopupId.PLAY)
+	if selected_card.cost <= energy:
+		pm.add_item("Play", PopupId.PLAY)
 	pm.add_item("Discard", PopupId.KILL)
 	pm.add_item("Shuffle", PopupId.SHUFFLE)
 
@@ -229,7 +233,6 @@ func field_pop():
 	pm.add_item("Kill", PopupId.KILL)
 	pm.add_item("Return to Hand", PopupId.ADDTOHAND)
 	pm.add_item("Shuffle", PopupId.SHUFFLE)
-	pm.add_item("Return to Hand", PopupId.ADDTOHAND)
 
 func deck_pop():
 	pm.clear()
@@ -304,6 +307,7 @@ func process_phases():
 	match(phase):
 		0:
 			print("Draw Phase")
+			energy = start_energy
 			cards_playable = false
 			battling = false
 			drawCard()
@@ -319,6 +323,8 @@ func process_phases():
 			battling = true
 		3:
 			print("End Phase")
+			if start_energy < 20:
+				start_energy += 2
 			cards_playable = false
 			battling = false
 			get_tree().quit()
@@ -357,5 +363,6 @@ func _ready():
 		i += 1
 	PlayerHealth = 40
 	OpponentHealth = 40
+	start_energy = 2
 	phase = 0
 	process_phases()
