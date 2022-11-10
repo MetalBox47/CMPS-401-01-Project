@@ -14,6 +14,9 @@ enum PopupId {
 	VIEWGRAVE
 }
 
+const main_icon = preload("res://Asset/Main_Phase_Icon.png")
+const battle_icon = preload("res://Asset/Attack_Phase_Icon.png")
+
 const CardBase = preload("res://Cards/CardBase.tscn") #preloading the CardBase
 const CardFocus = preload("res://Cards/CardBase.gd")
 var CardSize = Vector2(125,175) #This is half the size of the card
@@ -341,14 +344,17 @@ func process_phases():
 			process_phases()
 		1:
 			print("Main Phase")
+			$PhaseBox/PhaseSprite.set_texture(main_icon)
 			cards_playable = true
 			battling = false
 		2:
 			print("Battle Phase")
+			$PhaseBox/PhaseSprite.set_texture(battle_icon)
 			cards_playable = false
 			battling = true
 		3:
 			print("End Phase")
+			$PhaseBox/PhaseSprite.set_texture(null)
 			if start_energy < 20:
 				start_energy += 2
 			cards_playable = false
@@ -382,6 +388,10 @@ func _process(delta):
 	if $Graveyard/GraveCards.grave_clicked:
 		pm.popup(Rect2(click_pos.x, click_pos.y, pm.rect_size.x, pm.rect_size.y))
 		grave_pop()
+	
+	if $NextPhaseNode/NextPhaseButton.next_clicked and phase < 3:
+		phase += 1
+		process_phases()
 
 func _ready():
 	# Setting the scale of the background to fit the window

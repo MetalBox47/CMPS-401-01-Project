@@ -1,10 +1,20 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://PlaySpace/Playspace.gd" type="Script" id=1]
 [ext_resource path="res://Asset/DrawButton.png" type="Texture" id=2]
 [ext_resource path="res://PlaySpace/DrawButton.gd" type="Script" id=3]
 [ext_resource path="res://Asset/background_color.png" type="Texture" id=4]
 [ext_resource path="res://PlaySpace/GraveCards.gd" type="Script" id=5]
+[ext_resource path="res://Asset/NextTurnButton/frame_7_delay-0.1s.png" type="Texture" id=6]
+[ext_resource path="res://Asset/NextTurnButton/frame_1_delay-0.1s.png" type="Texture" id=7]
+[ext_resource path="res://Asset/NextTurnButton/frame_6_delay-0.1s.png" type="Texture" id=8]
+[ext_resource path="res://Asset/NextTurnButton/frame_8_delay-0.1s.png" type="Texture" id=9]
+[ext_resource path="res://Asset/NextTurnButton/frame_3_delay-0.1s.png" type="Texture" id=10]
+[ext_resource path="res://Asset/NextTurnButton/frame_5_delay-0.1s.png" type="Texture" id=11]
+[ext_resource path="res://Asset/NextTurnButton/frame_0_delay-0.1s.png" type="Texture" id=12]
+[ext_resource path="res://Asset/NextTurnButton/frame_4_delay-0.1s.png" type="Texture" id=13]
+[ext_resource path="res://Asset/NextTurnButton/frame_2_delay-0.1s.png" type="Texture" id=14]
+[ext_resource path="res://PlaySpace/NextPhaseButton.gd" type="Script" id=15]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends Node2D
@@ -20,6 +30,34 @@ script/source = "extends Node2D
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
+"
+
+[sub_resource type="AnimatedTexture" id=2]
+flags = 4
+frames = 9
+frame_0/texture = ExtResource( 12 )
+frame_1/texture = ExtResource( 7 )
+frame_1/delay_sec = 0.0
+frame_2/texture = ExtResource( 14 )
+frame_2/delay_sec = 0.0
+frame_3/texture = ExtResource( 10 )
+frame_3/delay_sec = 0.0
+frame_4/texture = ExtResource( 13 )
+frame_4/delay_sec = 0.0
+frame_5/texture = ExtResource( 11 )
+frame_5/delay_sec = 0.0
+frame_6/texture = ExtResource( 8 )
+frame_6/delay_sec = 0.0
+frame_7/texture = ExtResource( 6 )
+frame_7/delay_sec = 0.0
+frame_8/texture = ExtResource( 9 )
+frame_8/delay_sec = 0.0
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends Sprite
+
+const main_icon = preload(\"res://Asset/Main_Phase_Icon.png\")
+const battle_icon = preload(\"res://Asset/Attack_Phase_Icon.png\")
 "
 
 [node name="Playspace" type="Node2D"]
@@ -208,3 +246,23 @@ margin_bottom = 208.0
 [node name="Label" type="Label" parent="OppHealth"]
 margin_top = 83.0
 margin_bottom = 97.0
+
+[node name="NextPhaseNode" type="Node2D" parent="."]
+
+[node name="NextPhaseButton" type="TextureButton" parent="NextPhaseNode"]
+margin_left = 1357.0
+margin_top = 380.0
+margin_right = 1464.0
+margin_bottom = 484.0
+texture_normal = SubResource( 2 )
+expand = true
+script = ExtResource( 15 )
+
+[node name="PhaseBox" type="HBoxContainer" parent="."]
+margin_left = 1444.0
+margin_top = 526.0
+margin_right = 1554.0
+margin_bottom = 640.0
+
+[node name="PhaseSprite" type="Sprite" parent="PhaseBox"]
+script = SubResource( 3 )
