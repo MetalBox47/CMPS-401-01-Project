@@ -205,7 +205,7 @@ const DATA = {
 		},
 		"Chlorchestra_Symphony" : {
 			"rarity" : "SecretCard",
-			"name" : "Chlorchestra_Symphony",
+			"name" : "Chlorchestra Symphony",
 			"cost" : 20,
 			"effect" : "You can only activate this card if you control at least 1 “Chlorchestra Blossoon”, “Chlorchestra Harpaster”, “Chlorchestra Timpaniris”, “Chlorchestra Glorgan”, “Chlorchestra Trumpansy”, and “Chlorchestra Conductare”. Destroy all cards your opponent controls."
 		},
@@ -217,7 +217,7 @@ const DATA = {
 		},
 		"Bird_Call" : {
 			"rarity" : "CommonCard",
-			"name" : "Bird_Calle",
+			"name" : "Bird Call",
 			"cost" : 10,
 			"effect" : "Add 1 “Weatherbird” or “Lunarbird” creature from your deck to your hand.",
 		},
