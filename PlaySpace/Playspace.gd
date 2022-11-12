@@ -18,6 +18,18 @@ enum PopupId {
 	WIND
 	ECLIPSE
 	DUST
+	PHEALTHMAX
+	PHEALTHMIN
+	PHEALTHUP
+	PHEALTHDOWN
+	OHEALTHMAX
+	OHEALTHMIN
+	OHEALTHUP
+	OHEALTHDOWN
+	ENERGYMAX
+	ENERGYMIN
+	ENERGYUP
+	ENERGYDOWN
 }
 
 #onready var deck_node = get_node("/root/DeckBuilder/DeckBuilder")
@@ -310,6 +322,27 @@ func weather_debug_pop():
 	pm.add_item("Eclipse", PopupId.ECLIPSE)
 	pm.add_item("Dust Storm", PopupId.DUST)
 
+func health_debug_pop():
+	pm.clear()
+	pm.add_item("Set Health to 40", PopupId.PHEALTHMAX)
+	pm.add_item("Set Health to 1", PopupId.PHEALTHMIN)
+	pm.add_item("Health Up", PopupId.PHEALTHUP)
+	pm.add_item("Health Down", PopupId.PHEALTHDOWN)
+
+func opp_health_debug_pop():
+	pm.clear()
+	pm.add_item("Set Health to 40", PopupId.OHEALTHMAX)
+	pm.add_item("Set Health to 1", PopupId.OHEALTHMIN)
+	pm.add_item("Health Up", PopupId.OHEALTHUP)
+	pm.add_item("Health Down", PopupId.OHEALTHDOWN)
+
+func energy_debug_pop():
+	pm.clear()
+	pm.add_item("Set Energy to 20", PopupId.ENERGYMAX)
+	pm.add_item("Set Energy to 0", PopupId.ENERGYMIN)
+	pm.add_item("Energy Up", PopupId.ENERGYUP)
+	pm.add_item("Energy Down", PopupId.ENERGYDOWN)
+
 var checking_attacks = false
 var attack_target
 
@@ -354,6 +387,18 @@ func _input(event):
 	if Input.is_action_just_pressed("Scene Debug"):
 		weather_debug_pop()
 		pm.popup_centered(Vector2(pm.rect_size.x, pm.rect_size.y))
+	
+	if Input.is_action_just_pressed("Play Health Debug"):
+		health_debug_pop()
+		pm.popup_centered(Vector2(pm.rect_size.x, pm.rect_size.y))
+	
+	if Input.is_action_just_pressed("Opp Health Debug"):
+		opp_health_debug_pop()
+		pm.popup_centered(Vector2(pm.rect_size.x, pm.rect_size.y))
+	
+	if Input.is_action_just_pressed("Energy Debug"):
+		energy_debug_pop()
+		pm.popup_centered(Vector2(pm.rect_size.x, pm.rect_size.y))
 
 func _on_PopupMenu_id_pressed(id):
 	match id:
@@ -391,6 +436,30 @@ func _on_PopupMenu_id_pressed(id):
 			set_weather(4)
 		PopupId.DUST:
 			set_weather(5)
+		PopupId.PHEALTHMAX:
+			PlayerHealth = 40
+		PopupId.PHEALTHMIN:
+			PlayerHealth = 1
+		PopupId.PHEALTHUP:
+			PlayerHealth += 1
+		PopupId.PHEALTHDOWN:
+			PlayerHealth -= 1
+		PopupId.OHEALTHMAX:
+			OpponentHealth = 40
+		PopupId.OHEALTHMIN:
+			OpponentHealth = 1
+		PopupId.OHEALTHUP:
+			OpponentHealth += 1
+		PopupId.OHEALTHDOWN:
+			OpponentHealth -= 1
+		PopupId.ENERGYMAX:
+			energy = 20
+		PopupId.ENERGYMIN:
+			energy = 0
+		PopupId.ENERGYUP:
+			energy += 1
+		PopupId.ENERGYDOWN:
+			energy -= 1
 
 func _on_PopupMenu_index_pressed(index):
 	pass
