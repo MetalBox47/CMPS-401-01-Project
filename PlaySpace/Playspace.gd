@@ -12,12 +12,24 @@ enum PopupId {
 	SHUFFLEDECK
 	FORFEIT
 	VIEWGRAVE
+	CLOUD
+	RAIN
+	SUN
+	WIND
+	ECLIPSE
+	DUST
 }
 
 #onready var deck_node = get_node("/root/DeckBuilder/DeckBuilder")
 
 const main_icon = preload("res://Asset/Main_Phase_Icon.png")
 const battle_icon = preload("res://Asset/Attack_Phase_Icon.png")
+const cloudy_icon = preload("res://Asset/WeatherIcons/CloudIcon.png")
+const rain_icon = preload("res://Asset/WeatherIcons/RainIcon.png")
+const sun_icon = preload("res://Asset/WeatherIcons/SunIcon.png")
+const wind_icon = preload("res://Asset/WeatherIcons/WindIcon.png")
+const eclipse_icon = preload("res://Asset/WeatherIcons/EclipseIcon.png")
+const dust_icon = preload("res://Asset/WeatherIcons/DustIcon.png")
 
 const CardBase = preload("res://Cards/CardBase.tscn") #preloading the CardBase
 const CardFocus = preload("res://Cards/CardBase.gd")
@@ -66,8 +78,6 @@ var default_weather
 var energy
 var start_energy
 
-var paused = false
-
 var squish_factor = 0
 
 #var windowWidth = ProjectSettings.get_setting("display/window/size/width")
@@ -77,8 +87,23 @@ var squish_factor = 0
 var incrementer = 0
 var fieldIncrementer = 0
 
+func set_weather(value):
+	if value == 0:
+		$WeatherIcon/WeatherSprite.set_texture(cloudy_icon)
+	elif value == 1:
+		$WeatherIcon/WeatherSprite.set_texture(rain_icon)
+	elif value == 2:
+		$WeatherIcon/WeatherSprite.set_texture(sun_icon)
+	elif value == 3:
+		$WeatherIcon/WeatherSprite.set_texture(wind_icon)
+	elif value == 4:
+		$WeatherIcon/WeatherSprite.set_texture(eclipse_icon)
+	elif value == 5:
+		$WeatherIcon/WeatherSprite.set_texture(dust_icon)
+	
+	weather = value
+
 func checkWeather(percent):
-	randomize()
 	if percent < 55:
 		default_weather = 0
 	elif percent >= 55 and percent < 70:
@@ -276,6 +301,15 @@ func grave_pop():
 	pm.clear()
 	pm.add_item("View", PopupId.VIEWGRAVE)
 
+func weather_debug_pop():
+	pm.clear()
+	pm.add_item("Cloudy", PopupId.CLOUD)
+	pm.add_item("Rainy", PopupId.RAIN)
+	pm.add_item("Sunny", PopupId.SUN)
+	pm.add_item("Windy", PopupId.WIND)
+	pm.add_item("Eclipse", PopupId.ECLIPSE)
+	pm.add_item("Dust Storm", PopupId.DUST)
+
 var checking_attacks = false
 var attack_target
 
@@ -289,11 +323,8 @@ func attack(card):
 	
 	card.has_attacked = true
 
-func debug():
-	paused = !paused
-
 func _input(event):
-	if Input.is_action_just_released("leftclick") and !paused:
+	if Input.is_action_just_released("leftclick"):
 		click_pos = event.position
 		
 		if checking_attacks:
@@ -321,7 +352,8 @@ func _input(event):
 				field_pop()
 	
 	if Input.is_action_just_pressed("Scene Debug"):
-		debug()
+		weather_debug_pop()
+		pm.popup_centered(Vector2(pm.rect_size.x, pm.rect_size.y))
 
 func _on_PopupMenu_id_pressed(id):
 	match id:
@@ -347,6 +379,18 @@ func _on_PopupMenu_id_pressed(id):
 			get_tree().change_scene("res://MainMenu.tscn")
 		PopupId.VIEWGRAVE:
 			pass
+		PopupId.CLOUD:
+			set_weather(0)
+		PopupId.RAIN:
+			set_weather(1)
+		PopupId.SUN:
+			set_weather(2)
+		PopupId.WIND:
+			set_weather(3)
+		PopupId.ECLIPSE:
+			set_weather(4)
+		PopupId.DUST:
+			set_weather(5)
 
 func _on_PopupMenu_index_pressed(index):
 	pass
@@ -382,8 +426,9 @@ func process_phases():
 			battling = false
 
 func _process(delta):
-	$PlayerHealth/Label.text = str(PlayerHealth)
-	$OppHealth/Label.text = str(OpponentHealth)
+	$PlayerHealth/Label.text = str("Health: ", PlayerHealth)
+	$Energy/Label.text = str("Energy: ", energy)
+	$OppHealth/Label.text = str("OppHealth: ", OpponentHealth)
 	
 	if PlayerHealth <= 0:
 		print("You Lose!")
@@ -427,12 +472,12 @@ func _ready():
 	var chance = rand_range(0,101)
 	checkWeather(chance)
 	print(chance)
-	weather = default_weather
+	set_weather(default_weather)
 	print(weather)
 	for i in range(7):
 		drawCard()
 	PlayerHealth = 40
 	OpponentHealth = 40
-	start_energy = 4
+	start_energy = 20
 	phase = 0
 	process_phases()

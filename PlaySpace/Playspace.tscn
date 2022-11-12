@@ -228,14 +228,14 @@ margin_bottom = 20.0
 [node name="OppField" type="Node2D" parent="."]
 
 [node name="PlayerHealth" type="HBoxContainer" parent="."]
-margin_left = 100.0
-margin_top = 723.0
-margin_right = 319.0
-margin_bottom = 894.0
+margin_left = 1297.0
+margin_top = 799.0
+margin_right = 1365.0
+margin_bottom = 851.0
 
 [node name="Label" type="Label" parent="PlayerHealth"]
-margin_top = 78.0
-margin_bottom = 92.0
+margin_top = 19.0
+margin_bottom = 33.0
 
 [node name="OppHealth" type="HBoxContainer" parent="."]
 margin_left = 121.0
@@ -266,3 +266,21 @@ margin_bottom = 640.0
 
 [node name="PhaseSprite" type="Sprite" parent="PhaseBox"]
 script = SubResource( 3 )
+
+[node name="Energy" type="HBoxContainer" parent="."]
+margin_left = 1298.0
+margin_top = 810.0
+margin_right = 1386.0
+margin_bottom = 890.0
+
+[node name="Label" type="Label" parent="Energy"]
+margin_top = 33.0
+margin_bottom = 47.0
+
+[node name="WeatherIcon" type="HBoxContainer" parent="."]
+margin_left = 82.0
+margin_top = 402.0
+margin_right = 194.0
+margin_bottom = 518.0
+
+[node name="WeatherSprite" type="Sprite" parent="WeatherIcon"]
