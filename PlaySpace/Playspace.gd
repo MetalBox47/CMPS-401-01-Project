@@ -171,6 +171,7 @@ func mill():
 	DeckSize -= 1
 
 func shuffle_card(card):
+	randomize()
 	var parent = card.get_parent()
 	parent.remove_child(card)
 	if parent == $Cards:
@@ -343,34 +344,35 @@ func energy_debug_pop():
 	pm.add_item("Energy Up", PopupId.ENERGYUP)
 	pm.add_item("Energy Down", PopupId.ENERGYDOWN)
 
+func test_enemy():
+	var dummy_lanu = CardBase.instance() # The CardBase node is initialized
+	dummy_lanu.CardType = "Creatures"
+	dummy_lanu.CardName = "Umbot_Lanu"
+	var card_pos_x = $DummyBox.rect_global_position.x
+	var card_pos_y = $DummyBox.rect_global_position.y
+	dummy_lanu.rect_position = Vector2(card_pos_x, card_pos_y) # Assigns a global position to the card with respect to its container
+	dummy_lanu.rect_scale *= CardSize/dummy_lanu.rect_size # Re-scaling to fit the playspace
+	$OppField.add_child(dummy_lanu)
+
 var checking_attacks = false
-var attack_target
+var attacking_card
 
 func attack(card):
 	if $OppField.get_child_count() == 0:
 		OpponentHealth -= card.atk
 		print(OpponentHealth)
 	else:
+		attacking_card = card
 		checking_attacks = true
-		attack_target.hp -= card.atk
-	
-	card.has_attacked = true
 
 func _input(event):
 	if Input.is_action_just_released("leftclick"):
 		click_pos = event.position
 		
-		if checking_attacks:
-			for card in $OppField.get_children():
-				if card.state == "InHand":
-					attack_target = card
-					checking_attacks = false
-					return
-			checking_attacks = false
-		
 		var cards = $Cards.get_children()
 		for card in cards:
 			if card.state == "InHand":
+				checking_attacks = false
 				selected_card = card
 				pm.popup(Rect2(event.position.x, event.position.y, pm.rect_size.x, pm.rect_size.y))
 				hand_pop()
@@ -380,9 +382,16 @@ func _input(event):
 		var field = $PlayerField.get_children()
 		for card in field:
 			if card.state == "InHand":
+				checking_attacks = false
 				selected_card = card
 				pm.popup(Rect2(event.position.x, event.position.y, pm.rect_size.x, pm.rect_size.y))
 				field_pop()
+		
+		if checking_attacks:
+			for card in $OppField.get_children():
+				if card.state == "InHand":
+					card.hp -= attacking_card.atk
+					checking_attacks = false
 	
 	if Input.is_action_just_pressed("Scene Debug"):
 		weather_debug_pop()
@@ -399,6 +408,9 @@ func _input(event):
 	if Input.is_action_just_pressed("Energy Debug"):
 		energy_debug_pop()
 		pm.popup_centered(Vector2(pm.rect_size.x, pm.rect_size.y))
+	
+	if Input.is_action_just_pressed("Summon Enemy"):
+		test_enemy()
 
 func _on_PopupMenu_id_pressed(id):
 	match id:

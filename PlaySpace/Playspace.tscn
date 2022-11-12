@@ -284,3 +284,9 @@ margin_right = 194.0
 margin_bottom = 518.0
 
 [node name="WeatherSprite" type="Sprite" parent="WeatherIcon"]
+
+[node name="DummyBox" type="HBoxContainer" parent="."]
+margin_left = 354.0
+margin_top = 122.0
+margin_right = 570.0
+margin_bottom = 284.0
