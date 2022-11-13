@@ -82,6 +82,10 @@ var phase
 var cards_playable = false
 var battling = false
 
+var ending = false
+var time = 0
+const end_time = 3
+
 var selected_card
 
 var weather
@@ -98,6 +102,14 @@ var squish_factor = 0
 
 var incrementer = 0
 var fieldIncrementer = 0
+
+func win():
+	$StatusScreen/StatusLabel.text = "You Win!"
+	ending = true
+
+func lose():
+	$StatusScreen/StatusLabel.text = "You Lose!"
+	ending = true
 
 func set_weather(value):
 	if value == 0:
@@ -130,8 +142,7 @@ func checkWeather(percent):
 # Draws a card from the deck
 func drawCard():
 	if DeckSize <= 0:
-		get_tree().change_scene("res://MainMenu.tscn")
-		print("You Lose")
+		lose()
 		return
 	
 	var new_card = CardBase.instance() # The CardBase node is initialized
@@ -295,7 +306,7 @@ func hand_pop():
 
 func field_pop():
 	pm.clear()
-	if phase == 2 and !selected_card.has_attacked:
+	if phase == 2 and selected_card.CardType == "Creatures" and !selected_card.has_attacked:
 		pm.add_item("Attack", PopupId.ATTACK)
 	pm.add_item("Kill", PopupId.KILL)
 	pm.add_item("Return to Hand", PopupId.ADDTOHAND)
@@ -360,7 +371,7 @@ var attacking_card
 func attack(card):
 	if $OppField.get_child_count() == 0:
 		OpponentHealth -= card.atk
-		print(OpponentHealth)
+		card.has_attacked = true
 	else:
 		attacking_card = card
 		checking_attacks = true
@@ -374,8 +385,8 @@ func _input(event):
 			if card.state == "InHand":
 				checking_attacks = false
 				selected_card = card
-				pm.popup(Rect2(event.position.x, event.position.y, pm.rect_size.x, pm.rect_size.y))
 				hand_pop()
+				pm.popup(Rect2(event.position.x, event.position.y, pm.rect_size.x, pm.rect_size.y))
 				return
 		
 		
@@ -384,13 +395,15 @@ func _input(event):
 			if card.state == "InHand":
 				checking_attacks = false
 				selected_card = card
-				pm.popup(Rect2(event.position.x, event.position.y, pm.rect_size.x, pm.rect_size.y))
 				field_pop()
+				pm.popup(Rect2(event.position.x, event.position.y, pm.rect_size.x, pm.rect_size.y))
+				return
 		
 		if checking_attacks:
 			for card in $OppField.get_children():
-				if card.state == "InHand":
+				if card.state == "InHand" and card.CardType == "Creatures":
 					card.hp -= attacking_card.atk
+					attacking_card.has_attacked = true
 					checking_attacks = false
 	
 	if Input.is_action_just_pressed("Scene Debug"):
@@ -433,7 +446,7 @@ func _on_PopupMenu_id_pressed(id):
 		PopupId.VIEWDECK:
 			pass
 		PopupId.FORFEIT:
-			get_tree().change_scene("res://MainMenu.tscn")
+			lose()
 		PopupId.VIEWGRAVE:
 			pass
 		PopupId.CLOUD:
@@ -507,21 +520,26 @@ func process_phases():
 			battling = false
 
 func _process(delta):
+	if ending:
+		time += delta
+		if time > end_time:
+			time = 0
+			get_tree().change_scene("res://MainMenu.tscn")
+	
 	$PlayerHealth/Label.text = str("Health: ", PlayerHealth)
 	$Energy/Label.text = str("Energy: ", energy)
 	$OppHealth/Label.text = str("OppHealth: ", OpponentHealth)
 	
 	if PlayerHealth <= 0:
-		print("You Lose!")
-		get_tree().change_scene("res://MainMenu.tscn")
+		win()
 	if OpponentHealth <= 0:
-		print("You Win!")
-		get_tree().change_scene("res://MainMenu.tscn")
+		lose()
 	
 	for card in $PlayerField.get_children():
-		if card.hp <= 0:
-			killCard(card)
-			card.hp = card.base_hp
+		if card.CardType == "Creatures":
+			if card.hp <= 0:
+				killCard(card)
+				card.hp = card.base_hp
 	
 	for card in $OppField.get_children():
 		if card.hp <= 0:
