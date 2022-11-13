@@ -74,8 +74,10 @@ onready var new_scale = rect_scale * 1.1
 onready var original_scale = rect_scale
 
 func _physics_process(delta):
-	$HBoxContainer/Elements/HBoxContainer/Health/Label.text = str(hp)
-	$HBoxContainer/Elements/HBoxContainer/Attack/Label.text = str(atk)
+	if CardType == "Creatures":
+		$HBoxContainer/Elements/HBoxContainer/Health/Label.text = str(hp)
+		$HBoxContainer/Elements/HBoxContainer/Attack/Label.text = str(atk)
+	
 	match state:
 		"InHand":
 			rect_scale = new_scale
