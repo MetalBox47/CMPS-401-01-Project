@@ -290,3 +290,13 @@ margin_left = 354.0
 margin_top = 122.0
 margin_right = 570.0
 margin_bottom = 284.0
+
+[node name="StatusScreen" type="HBoxContainer" parent="."]
+margin_left = 762.0
+margin_top = 382.0
+margin_right = 1020.0
+margin_bottom = 480.0
+
+[node name="StatusLabel" type="Label" parent="StatusScreen"]
+margin_top = 42.0
+margin_bottom = 56.0
